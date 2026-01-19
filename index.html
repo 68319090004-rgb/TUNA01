@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Farm Control</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+    <h1>ระบบรดน้ำอัตโนมัติ</h1>
+    <p>ความชื้นในดิน: <span id="moisture">--</span> %</p>
+    <button onclick="controlPump(true)">เปิดปั๊มน้ำ</button>
+    <button onclick="controlPump(false)">ปิดปั๊มน้ำ</button>
+
+    <script>
+        // ใส่ Config จาก Firebase ของคุณตรงนี้
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // ดึงค่าความชื้นแบบ Real-time
+        db.ref("moisture").on("value", (snapshot) => {
+            document.getElementById("moisture").innerText = snapshot.val();
+        });
+
+        // ฟังก์ชันสั่งเปิด-ปิด
+        function controlPump(status) {
+            db.ref("/").update({ pumpStatus: status });
+        }
+    </script>
+</body>
+</html>
